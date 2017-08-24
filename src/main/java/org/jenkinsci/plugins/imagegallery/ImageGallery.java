@@ -27,14 +27,16 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
+
 import hudson.DescriptorExtensionList;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Action;
-import hudson.model.BuildListener;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.model.Node;
+import hudson.model.TaskListener;
 import jenkins.model.Jenkins;
 
 
@@ -122,6 +124,6 @@ public abstract class ImageGallery implements Serializable, Describable<ImageGal
 		return null;
 	}
 	
-	public abstract boolean createImageGallery(AbstractBuild<?, ?> build, BuildListener listener) throws InterruptedException, IOException;
+	public abstract boolean createImageGallery(@Nonnull AbstractBuild<?, ?> build, TaskListener listener) throws InterruptedException, IOException;
 
 }

@@ -29,6 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -37,8 +39,8 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Util;
 import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
 import hudson.model.Result;
+import hudson.model.TaskListener;
 
 /**
  * An image gallery of archived artifacts Comparing same files in different folders.
@@ -93,7 +95,7 @@ public class InFolderComparativeArchivedImagesGallery extends ComparativeArchive
 	}
 
 	@Override
-	public boolean createImageGallery(AbstractBuild<?, ?> build, BuildListener listener) throws InterruptedException, IOException {
+	public boolean createImageGallery(@Nonnull AbstractBuild<?, ?> build, TaskListener listener) throws InterruptedException, IOException {
 		listener.getLogger().append("Creating archived images gallery.");
 		if (build.getHasArtifacts()) {
             File artifactsRootDir = build.getArtifactsDir().getAbsoluteFile();

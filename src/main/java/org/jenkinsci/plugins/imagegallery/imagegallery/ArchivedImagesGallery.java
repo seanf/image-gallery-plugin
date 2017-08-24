@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nonnull;
+
 import org.jenkinsci.plugins.imagegallery.AbstractArchivedImagesGallery;
 import org.jenkinsci.plugins.imagegallery.ImageGalleryDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -38,8 +40,8 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Util;
 import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
 import hudson.model.Result;
+import hudson.model.TaskListener;
 
 /**
  * An image gallery of archived artifacts. Its descriptor is a static inner 
@@ -112,7 +114,7 @@ public class ArchivedImagesGallery extends AbstractArchivedImagesGallery {
 	 * @see com.tupilabs.image_gallery.image_gallery.ImageGallery#createImageGallery(hudson.model.AbstractBuild, hudson.model.BuildListener)
 	 */
 	@Override
-	public boolean createImageGallery(AbstractBuild<?, ?> build, BuildListener listener) throws InterruptedException, IOException {
+	public boolean createImageGallery(@Nonnull AbstractBuild<?, ?> build, TaskListener listener) throws InterruptedException, IOException {
 		listener.getLogger().append("Creating archived images gallery.");
 		if(build.getHasArtifacts()) {
 			File artifactsDir = build.getArtifactsDir();

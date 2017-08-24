@@ -24,26 +24,30 @@
 package org.jenkinsci.plugins.imagegallery;
 
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.init.InitMilestone;
 import hudson.init.Initializer;
-import hudson.model.BuildListener;
 import hudson.model.Items;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Descriptor;
 import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import hudson.util.FormValidation;
+import jenkins.tasks.SimpleBuildStep;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.annotation.Nonnull;
 
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.imagegallery.imagegallery.ArchivedImagesGallery;
@@ -62,7 +66,7 @@ import org.kohsuke.stapler.QueryParameter;
  * @see ImageGallery
  * @since 0.1
  */
-public class ImageGalleryRecorder extends Recorder {
+public class ImageGalleryRecorder extends Recorder implements SimpleBuildStep {
 	
 	private static Logger LOGGER = Logger.getLogger("com.tupilabs.image_gallery");
 
@@ -97,11 +101,17 @@ public class ImageGalleryRecorder extends Recorder {
 	}
 	
 	/* (non-Javadoc)
-	 * @see hudson.tasks.BuildStepCompatibilityLayer#perform(hudson.model.AbstractBuild, hudson.Launcher, hudson.model.BuildListener)
+	 * @see jenkins.tasks.SimpleBuildStep.perform
 	 */
 	@Override
-	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
-			BuildListener listener) throws InterruptedException, IOException {
+	public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath workspace,
+			@Nonnull Launcher launcher, @Nonnull TaskListener listener)
+			throws InterruptedException, IOException {
+		if (!(run instanceof AbstractBuild)) {
+			listener.getLogger().append("Unable to create image galleries: Run is not an AbstractBuild");
+			return;
+		}
+		AbstractBuild<?, ?> build = (AbstractBuild<?, ?>) run;
 		listener.getLogger().append("Creating image galleries.");
 		boolean r = true;
 		for(ImageGallery imageGallery : this.imageGalleries) {
@@ -118,7 +128,6 @@ public class ImageGalleryRecorder extends Recorder {
 				ie.printStackTrace(listener.getLogger());
 			}
 		}
-		return r;
 	}
 	
 	/* (non-Javadoc)
@@ -129,7 +138,7 @@ public class ImageGalleryRecorder extends Recorder {
 	public BuildStepDescriptor getDescriptor() {
 		return DESCRIPTOR;
 	}
-	
+
 	public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
 		// exposed for jelly

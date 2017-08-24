@@ -36,8 +36,8 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Util;
 import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
 import hudson.model.Result;
+import hudson.model.TaskListener;
 
 /**
  * An image gallery of archived artifacts Comparing same files in different folders.
@@ -93,7 +93,7 @@ public class MultipleFolderComparativeArchivedImagesGallery extends ComparativeA
 	}
 
 	@Override
-	public boolean createImageGallery(AbstractBuild<?, ?> build, BuildListener listener) throws InterruptedException, IOException {
+	public boolean createImageGallery(AbstractBuild<?, ?> build, TaskListener listener) throws InterruptedException, IOException {
 		listener.getLogger().append("Creating archived images gallery.");
 		if (build.getHasArtifacts()) {
 			File artifactsDir = build.getArtifactsDir().getAbsoluteFile();
